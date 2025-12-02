@@ -1,0 +1,158 @@
+You are an expert full-stack engineer specializing in Next.js 14 (App Router), TypeScript, Tailwind CSS, Firebase (Auth + Realtime DB), and Google Gemini.
+
+I want you to generate, IN ONE GO, a complete MVP for a web app that:
+- Lets users sign up / log in
+- Lets users upload their resume
+- Lets users paste or enter job requirements
+- Uses Gemini to analyse the resume against the job requirements and generate:
+  - A match score (0–100)
+  - A short feedback summary
+  - Tailored interview questions
+  - Tailored application questions (for cover letters, essays, “why this role” answers, etc.)
+- Stores all this data per user in Firestore so they can view past analyses on a dashboard
+
+### Tech & Architecture Requirements
+
+1. **Framework & Language**
+   - Use **Next.js 14 with the App Router** (in `app/` directory)
+   - Use **TypeScript** everywhere
+   - Use **server actions / Route Handlers** for backend logic
+   - Use **Tailwind CSS** for styling with a clean, minimal UI
+
+2. **Firebase Setup**
+   - Use **Firebase Authentication** with email/password sign-in
+   - Use **Realtime Database**  to store:
+     - Users collection
+     - Resume analyses collection (linked to user)
+   - Create a `lib/firebase.ts` for Firebase client initialization
+   - Use environment variables for Firebase config:
+     - `NEXT_PUBLIC_FIREBASE_API_KEY`
+     - `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN`
+     - `NEXT_PUBLIC_FIREBASE_PROJECT_ID`
+     - `NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET`
+     - `NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID`
+     - `NEXT_PUBLIC_FIREBASE_APP_ID`
+
+3. **Gemini Integration**
+   - Assume a generic Gemini text (or multimodal if needed) endpoint, called via a server-side function
+   - Put Gemini call logic in `lib/gemini.ts`
+   - Use an environment variable `GEMINI_API_KEY`
+   - Take as input:
+     - Resume text (extracted from uploaded file or pasted by user)
+     - Job description / job requirements text
+   - Output (as a structured TypeScript type):
+     - `score: number` (0–100)
+     - `feedbackSummary: string`
+     - `interviewQuestions: string[]`
+     - `applicationQuestions: string[]`
+   - Implement a clear prompt for Gemini that:
+     - Compares resume vs job requirements
+     - Computes a rational match score
+     - Generates concise but useful questions
+
+4. **Pages / Routes (App Router)**
+   Implement at least the following routes under `app/`:
+
+   - `/` (Landing Page)
+     - Simple hero section: app name, one-line description
+     - “Get Started” / “Sign In” CTA buttons
+
+   - `/auth` (Auth Page)
+     - Tabs or toggle for Login / Signup
+     - Email/password fields
+     - Uses Firebase Auth
+     - On successful login, redirect to `/dashboard`
+
+   - `/dashboard` (Protected)
+     - Only accessible when authenticated
+     - Shows:
+       - Button: “New Analysis”
+       - List/table of previous analyses (job title, score, created date)
+       - Clicking an item opens `/analysis/[id]`
+
+   - `/analysis/new` (Protected)
+     - Form with:
+       - Job Title
+       - Company (optional)
+       - Textarea for Job Description / Job Requirements
+       - Resume upload (PDF/Docx) OR textarea for resume text (if file parsing is too complex, use textarea in MVP)
+     - “Analyze” button
+     - On submit:
+       - Calls server action / API route which:
+         - Sends data to Gemini
+         - Receives the structured result
+         - Saves result to Firestore under current user
+       - Redirects or shows the result on the same page
+
+   - `/analysis/[id]` (Protected)
+     - Loads one analysis document from Firestore
+     - Displays:
+       - Job title, company, date
+       - Score (with a progress bar or badge)
+       - Feedback summary
+       - Interview questions (in list format)
+       - Application questions (in list format)
+     - Option to “Re-run analysis” (optional for MVP; can simply refetch from Gemini with same data)
+
+5. **Data Model (Firestore)**
+   Use a simple, clear TypeScript interface and Firestore structure, for example:
+
+   - `users` collection:
+     - `uid` (Firebase user ID)
+     - `email`
+     - `createdAt`
+
+   - `analyses` collection:
+     - `id`
+     - `userId` (reference to `users.uid`)
+     - `jobTitle`
+     - `company`
+     - `jobDescription`
+     - `resumeText`
+     - `score`
+     - `feedbackSummary`
+     - `interviewQuestions` (array of strings)
+     - `applicationQuestions` (array of strings)
+     - `createdAt`
+
+   Implement helper functions in something like `lib/firestore.ts`:
+   - `saveAnalysis(analysis: AnalysisInput): Promise<AnalysisDocument>`
+   - `getUserAnalyses(userId: string): Promise<AnalysisDocument[]>`
+   - `getAnalysisById(id: string): Promise<AnalysisDocument | null>`
+
+6. **Auth Protection**
+   - Implement a simple client-side and server-side pattern to protect `/dashboard`, `/analysis/new`, and `/analysis/[id]`:
+     - If user is not logged in, redirect to `/auth`
+   - Use Firebase Auth on the client and, where needed, pass the ID token to server actions to associate requests with a user
+
+7. **UI/UX**
+   - Use Tailwind for a clean, centered layout with cards
+   - Design:
+     - A top navbar with app name and “Logout” button when authenticated
+     - Clear call-to-action buttons
+     - Responsive layout that works well on desktop and mobile
+
+8. **Code Organization**
+   - `app/` for routes and main UI
+   - `components/` for reusable components like:
+     - `Navbar`
+     - `AuthForm`
+     - `AnalysisCard`
+     - `AnalysisForm`
+   - `lib/firebase.ts` for Firebase initialization
+   - `lib/firestore.ts` for DB helpers
+   - `lib/gemini.ts` for Gemini interaction
+   - `types/` for shared TypeScript interfaces
+
+9. **What I Want From You**
+   - Generate the full project structure and code stubs sufficient to run `npm install` and `npm run dev` after I add environment variables.
+   - Include example implementations (not just stubs) for:
+     - Auth integration
+     - Realtime DB reads/writes for analyses
+     - Gemini API call
+   - Add clear TODO comments where I must insert actual API keys or adjust for my specific Gemini SDK/client.
+
+Please now generate all necessary files, components, and route handlers for this MVP in one coherent Next.js project using the specifications above.
+
+
+Here is the reference of gemini api docs https://ai.google.dev/gemini-api/docs

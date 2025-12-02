@@ -3,6 +3,7 @@
 import React, { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from './AuthProvider';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function AnalysisForm() {
   const [jobTitle, setJobTitle] = useState('');
@@ -148,42 +149,52 @@ export default function AnalysisForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* Error Message */}
-      {error && (
-        <div className="p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg">
-          {error}
-        </div>
-      )}
+      <AnimatePresence>
+        {error && (
+          <motion.div 
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="p-4 bg-red-500/10 border border-red-500/30 text-red-400 rounded-lg"
+          >
+            {error}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Job Details */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Job Details</h2>
+      <div className="glass-strong rounded-xl p-6 border border-dark-600/50">
+        <h2 className="text-lg font-semibold text-white mb-4 flex items-center">
+          <span className="w-8 h-8 rounded-lg bg-gradient-to-br from-accent-cyan to-primary-500 flex items-center justify-center mr-3 text-dark-900 text-sm font-bold">1</span>
+          Job Details
+        </h2>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label htmlFor="jobTitle" className="block text-sm font-medium text-gray-700 mb-1">
-              Job Title <span className="text-red-500">*</span>
+            <label htmlFor="jobTitle" className="block text-sm font-medium text-slate-300 mb-2">
+              Job Title <span className="text-accent-cyan">*</span>
             </label>
             <input
               id="jobTitle"
               type="text"
               value={jobTitle}
               onChange={(e) => setJobTitle(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition"
+              className="w-full px-4 py-3 bg-dark-700 border border-dark-600 rounded-lg text-white placeholder-slate-500 focus:ring-2 focus:ring-accent-cyan/30 focus:border-accent-cyan transition-all duration-200"
               placeholder="e.g., Senior Software Engineer"
               disabled={loading}
             />
           </div>
 
           <div>
-            <label htmlFor="company" className="block text-sm font-medium text-gray-700 mb-1">
-              Company <span className="text-gray-400">(optional)</span>
+            <label htmlFor="company" className="block text-sm font-medium text-slate-300 mb-2">
+              Company <span className="text-slate-500">(optional)</span>
             </label>
             <input
               id="company"
               type="text"
               value={company}
               onChange={(e) => setCompany(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition"
+              className="w-full px-4 py-3 bg-dark-700 border border-dark-600 rounded-lg text-white placeholder-slate-500 focus:ring-2 focus:ring-accent-cyan/30 focus:border-accent-cyan transition-all duration-200"
               placeholder="e.g., Google"
               disabled={loading}
             />
@@ -191,15 +202,15 @@ export default function AnalysisForm() {
         </div>
 
         <div className="mt-4">
-          <label htmlFor="jobDescription" className="block text-sm font-medium text-gray-700 mb-1">
-            Job Description / Requirements <span className="text-red-500">*</span>
+          <label htmlFor="jobDescription" className="block text-sm font-medium text-slate-300 mb-2">
+            Job Description / Requirements <span className="text-accent-cyan">*</span>
           </label>
           <textarea
             id="jobDescription"
             value={jobDescription}
             onChange={(e) => setJobDescription(e.target.value)}
             rows={8}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition resize-none"
+            className="w-full px-4 py-3 bg-dark-700 border border-dark-600 rounded-lg text-white placeholder-slate-500 focus:ring-2 focus:ring-accent-cyan/30 focus:border-accent-cyan transition-all duration-200 resize-none"
             placeholder="Paste the full job description here, including requirements, responsibilities, and qualifications..."
             disabled={loading}
           />
@@ -207,21 +218,24 @@ export default function AnalysisForm() {
       </div>
 
       {/* Resume Section */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Your Resume</h2>
+      <div className="glass-strong rounded-xl p-6 border border-dark-600/50">
+        <h2 className="text-lg font-semibold text-white mb-4 flex items-center">
+          <span className="w-8 h-8 rounded-lg bg-gradient-to-br from-accent-purple to-pink-500 flex items-center justify-center mr-3 text-white text-sm font-bold">2</span>
+          Your Resume
+        </h2>
         
         {/* Input Type Toggle */}
-        <div className="flex mb-4 border-b">
+        <div className="flex mb-4 border-b border-dark-600">
           <button
             type="button"
             onClick={() => {
               setResumeInputType('file');
               setError('');
             }}
-            className={`flex-1 pb-3 text-center font-medium transition-colors ${
+            className={`flex-1 pb-3 text-center font-medium transition-all duration-200 relative ${
               resumeInputType === 'file'
-                ? 'text-primary-600 border-b-2 border-primary-600'
-                : 'text-gray-500 hover:text-gray-700'
+                ? 'text-accent-cyan'
+                : 'text-slate-400 hover:text-slate-300'
             }`}
           >
             <span className="flex items-center justify-center">
@@ -230,6 +244,12 @@ export default function AnalysisForm() {
               </svg>
               Upload File
             </span>
+            {resumeInputType === 'file' && (
+              <motion.div
+                layoutId="resumeTab"
+                className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-accent-cyan to-accent-purple"
+              />
+            )}
           </button>
           <button
             type="button"
@@ -237,10 +257,10 @@ export default function AnalysisForm() {
               setResumeInputType('text');
               setError('');
             }}
-            className={`flex-1 pb-3 text-center font-medium transition-colors ${
+            className={`flex-1 pb-3 text-center font-medium transition-all duration-200 relative ${
               resumeInputType === 'text'
-                ? 'text-primary-600 border-b-2 border-primary-600'
-                : 'text-gray-500 hover:text-gray-700'
+                ? 'text-accent-cyan'
+                : 'text-slate-400 hover:text-slate-300'
             }`}
           >
             <span className="flex items-center justify-center">
@@ -249,100 +269,121 @@ export default function AnalysisForm() {
               </svg>
               Paste Text
             </span>
+            {resumeInputType === 'text' && (
+              <motion.div
+                layoutId="resumeTab"
+                className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-accent-cyan to-accent-purple"
+              />
+            )}
           </button>
         </div>
 
-        {resumeInputType === 'file' ? (
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Resume File <span className="text-red-500">*</span>
-            </label>
-            <p className="text-xs text-gray-500 mb-3">
-              Upload your resume as PDF or Word document (max 10MB)
-            </p>
-            
-            <div 
-              className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
-                resumeFile 
-                  ? 'border-primary-300 bg-primary-50' 
-                  : 'border-gray-300 hover:border-gray-400'
-              }`}
+        <AnimatePresence mode="wait">
+          {resumeInputType === 'file' ? (
+            <motion.div
+              key="file"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
             >
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                onChange={handleFileChange}
-                className="hidden"
-                id="resume-file"
-                disabled={loading}
-              />
+              <label className="block text-sm font-medium text-slate-300 mb-2">
+                Resume File <span className="text-accent-cyan">*</span>
+              </label>
+              <p className="text-xs text-slate-500 mb-3">
+                Upload your resume as PDF or Word document (max 10MB)
+              </p>
               
-              {resumeFile ? (
-                <div className="space-y-3">
-                  <div className="flex items-center justify-center">
-                    <svg className="w-12 h-12 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-gray-900">{resumeFile.name}</p>
-                    <p className="text-xs text-gray-500">
-                      {(resumeFile.size / 1024 / 1024).toFixed(2)} MB
-                    </p>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setResumeFile(null);
-                      if (fileInputRef.current) {
-                        fileInputRef.current.value = '';
-                      }
-                    }}
-                    className="text-sm text-red-600 hover:text-red-700 font-medium"
-                    disabled={loading}
-                  >
-                    Remove file
-                  </button>
-                </div>
-              ) : (
-                <label htmlFor="resume-file" className="cursor-pointer">
+              <div 
+                className={`border-2 border-dashed rounded-xl p-8 text-center transition-all duration-200 ${
+                  resumeFile 
+                    ? 'border-accent-cyan/50 bg-accent-cyan/5' 
+                    : 'border-dark-600 hover:border-dark-500 bg-dark-700/50'
+                }`}
+              >
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                  onChange={handleFileChange}
+                  className="hidden"
+                  id="resume-file"
+                  disabled={loading}
+                />
+                
+                {resumeFile ? (
                   <div className="space-y-3">
                     <div className="flex items-center justify-center">
-                      <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                      </svg>
+                      <div className="w-12 h-12 rounded-full bg-accent-cyan/20 flex items-center justify-center">
+                        <svg className="w-6 h-6 text-accent-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      </div>
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-primary-600">Click to upload</p>
-                      <p className="text-xs text-gray-500">or drag and drop</p>
+                      <p className="text-sm font-medium text-white">{resumeFile.name}</p>
+                      <p className="text-xs text-slate-500">
+                        {(resumeFile.size / 1024 / 1024).toFixed(2)} MB
+                      </p>
                     </div>
-                    <p className="text-xs text-gray-400">PDF, DOC, or DOCX</p>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setResumeFile(null);
+                        if (fileInputRef.current) {
+                          fileInputRef.current.value = '';
+                        }
+                      }}
+                      className="text-sm text-red-400 hover:text-red-300 font-medium transition-colors"
+                      disabled={loading}
+                    >
+                      Remove file
+                    </button>
                   </div>
-                </label>
-              )}
-            </div>
-          </div>
-        ) : (
-          <div>
-            <label htmlFor="resumeText" className="block text-sm font-medium text-gray-700 mb-1">
-              Resume Text <span className="text-red-500">*</span>
-            </label>
-            <p className="text-xs text-gray-500 mb-2">
-              Paste your resume content here. For best results, include all relevant experience, skills, and education.
-            </p>
-            <textarea
-              id="resumeText"
-              value={resumeText}
-              onChange={(e) => setResumeText(e.target.value)}
-              rows={12}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition resize-none font-mono text-sm"
-              placeholder="Paste your resume text here...
+                ) : (
+                  <label htmlFor="resume-file" className="cursor-pointer">
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-center">
+                        <div className="w-12 h-12 rounded-full bg-dark-600 flex items-center justify-center">
+                          <svg className="w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                          </svg>
+                        </div>
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-accent-cyan">Click to upload</p>
+                        <p className="text-xs text-slate-500">or drag and drop</p>
+                      </div>
+                      <p className="text-xs text-slate-600">PDF, DOC, or DOCX</p>
+                    </div>
+                  </label>
+                )}
+              </div>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="text"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+            >
+              <label htmlFor="resumeText" className="block text-sm font-medium text-slate-300 mb-2">
+                Resume Text <span className="text-accent-cyan">*</span>
+              </label>
+              <p className="text-xs text-slate-500 mb-3">
+                Paste your resume content here. For best results, include all relevant experience, skills, and education.
+              </p>
+              <textarea
+                id="resumeText"
+                value={resumeText}
+                onChange={(e) => setResumeText(e.target.value)}
+                rows={12}
+                className="w-full px-4 py-3 bg-dark-700 border border-dark-600 rounded-lg text-white placeholder-slate-500 focus:ring-2 focus:ring-accent-cyan/30 focus:border-accent-cyan transition-all duration-200 resize-none font-mono text-sm"
+                placeholder="Paste your resume text here...
 
 Example format:
 
 JOHN DOE
-john.doe@email.com | (555) 123-4567 | LinkedIn: linkedin.com/in/johndoe
+john.doe@email.com | (555) 123-4567
 
 SUMMARY
 Experienced software engineer with 5+ years...
@@ -350,29 +391,28 @@ Experienced software engineer with 5+ years...
 EXPERIENCE
 Senior Software Engineer | ABC Company | 2020 - Present
 - Led development of...
-- Implemented...
-
-EDUCATION
-Bachelor of Science in Computer Science | University Name | 2018
 
 SKILLS
-JavaScript, TypeScript, React, Node.js, Python..."
-              disabled={loading}
-            />
-          </div>
-        )}
+JavaScript, TypeScript, React, Node.js..."
+                disabled={loading}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       {/* Submit Button */}
       <div className="flex justify-end">
-        <button
+        <motion.button
           type="submit"
           disabled={loading}
-          className="px-8 py-3 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
+          whileHover={{ scale: loading ? 1 : 1.02, boxShadow: loading ? 'none' : '0 0 30px rgba(34, 211, 238, 0.4)' }}
+          whileTap={{ scale: loading ? 1 : 0.98 }}
+          className="px-8 py-3 bg-gradient-to-r from-accent-cyan to-primary-400 text-dark-900 font-medium rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center shadow-glow"
         >
           {loading ? (
             <>
-              <svg className="animate-spin -ml-1 mr-2 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+              <svg className="animate-spin -ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
               </svg>
@@ -386,7 +426,7 @@ JavaScript, TypeScript, React, Node.js, Python..."
               Analyze Resume
             </>
           )}
-        </button>
+        </motion.button>
       </div>
     </form>
   );

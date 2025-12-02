@@ -1,0 +1,121 @@
+You are a senior frontend engineer and UI designer.
+
+I already have a working Next.js 14 + TypeScript + App Router project for a resume analysis app using Firebase + Gemini. The logic and pages exist (landing, auth, dashboard, analysis/new, analysis/[id]), but the UI is basic. 
+
+Your task: REFINE AND UPGRADE THE EXISTING UI INTO A FUTURISTIC, MODERN, MINIMAL DESIGN with smooth transitions and micro-interactions, WITHOUT breaking the existing logic.
+
+### Tech & Styling Constraints
+- Use **Tailwind CSS** (assume it is already configured).
+- Prefer a **dark, futuristic theme** with high contrast, neon accents, and lots of whitespace.
+- Use **rounded-2xl / 3xl cards**, subtle **glassmorphism** (blurred backgrounds), and soft shadows.
+- Use **Framer Motion** for transitions and animations where appropriate.
+- Keep everything **responsive** (mobile-first, then desktop).
+
+### Global Design System
+1. **Colors (example – you can tweak intelligently):**
+   - Background: very dark (e.g. `#020617`, `#030712`)
+   - Surface: slightly lighter panels (e.g. `#020617` → `#0b1120`)
+   - Accent: neon cyan / purple (e.g. `#22d3ee`, `#a855f7`)
+   - Text: neutral (`text-slate-100`, `text-slate-400`)
+
+2. **Typography:**
+   - Use a clean sans-serif (e.g. Inter). 
+   - Clear hierarchy: page titles `text-3xl/4xl font-semibold`, section titles `text-xl/2xl`, body `text-sm/md`.
+   - Keep things minimal, no cluttered text.
+
+3. **Layout:**
+   - Create a **max-w-5xl** or **max-w-6xl** centered content layout.
+   - Use consistent `padding` and `gap` across sections (e.g. `px-4 sm:px-6 lg:px-8 py-8`).
+   - Use a grid / flex layout for dashboard cards.
+
+4. **Components:**
+   Refactor or create reusable components in `components/`:
+   - `LayoutShell` or `AppShell` component:
+     - Full-height background gradient / subtle animated background.
+     - Centered content with max width.
+   - `Navbar`:
+     - Left: app logo / name (e.g. “ResumePilot AI” or similar).
+     - Right: subtle pill-shaped user menu and Logout button.
+   - `PrimaryButton`, `SecondaryButton`:
+     - Rounded-full or rounded-xl.
+     - Hover + focus states with scale and glow.
+   - `Card`:
+     - Glassmorphism style (backdrop-blur, border, gradient border or glow).
+   - `StatBadge` / `ScoreBadge`:
+     - Used to display resume match score with a gradient background and small animation.
+   - `SectionHeader`:
+     - Title + optional description, consistent across pages.
+
+### Animations & Transitions (Framer Motion)
+- Add **page transitions**:
+  - Fade + slight upward motion when pages mount.
+- Add **card hover effects**:
+  - Slight scale-up and shadow / border-glow on hover.
+- Add smooth **button interactions**:
+  - Scale + subtle glow on hover and tap.
+- For lists (like analyses on the dashboard), use **staggered animations** when they appear.
+
+### Page-Specific UI Requirements
+
+1. **`/` (Landing Page)**
+   - Hero section:
+     - Catchy headline about AI-powered resume + job matching.
+     - Short subheading.
+     - Two buttons: “Get Started” (primary) and “Learn more” (secondary).
+   - Background:
+     - Subtle animated gradient or particles effect (can be simple CSS animation).
+   - Include a small 3-step “How it works” section with icons / simple cards.
+
+2. **`/auth` (Login / Signup)**
+   - Centered auth card with tabs/toggles for Login / Signup.
+   - Big, friendly heading (“Welcome back” / “Create an account”).
+   - Clean form fields:
+     - Use labels, placeholders, and subtle focus rings.
+   - Show error/success states as small colored text or alert strips inside the card.
+   - Add a soft entrance animation for the card.
+
+3. **`/dashboard`**
+   - Welcome header with user’s email or name.
+   - Main layout:
+     - Left: “New Analysis” call-to-action card.
+     - Right: list/grid of previous analyses.
+   - Each analysis card:
+     - Show job title, company, created date.
+     - Prominent score badge with gradient.
+     - Hover animation and click to open detail page.
+   - Optional: simple filters or search bar at the top.
+
+4. **`/analysis/new`**
+   - Page title and short description at the top.
+   - Place resume + job details in a **two-column layout** on desktop, stacked on mobile:
+     - Column 1: Job Title, Company, Job Description textarea.
+     - Column 2: Resume textarea (for now) with monospace styling and subtle background.
+   - “Analyze Resume” button anchored at the bottom of the form section, full-width on mobile.
+   - On submit, show a loading state:
+     - Animated loading indicator with text like “Analyzing with Gemini…”.
+
+5. **`/analysis/[id]`**
+   - Show a header with job title, company, and created date.
+   - Display score at the top in a large circular or pill-shaped score component.
+   - Use cards for:
+     - Feedback summary.
+     - Interview questions (list with bullet icons or numbered).
+     - Application questions.
+   - Add copy-to-clipboard icons next to each question group.
+   - Enter animation: staggered cards sliding/fading in.
+
+### Implementation Instructions
+- DO NOT change existing Firebase and Gemini business logic, only **wrap or restyle** components.
+- Where needed, refactor JSX into smaller, well-named components and place them under `components/`.
+- Add/adjust Tailwind utility classes, and update `globals.css` if necessary for base styles (background, font, scrollbars).
+- Add Framer Motion:
+  - Install dependency if not present (`framer-motion`).
+  - Use it in page components and key reusable UI components (cards, buttons).
+
+### Output
+Update the existing project files directly:
+- Layout and page components under `app/`
+- Create or update components under `components/`
+- Optionally adjust `app/layout.tsx` and `app/globals.css` for global styling.
+
+Keep your changes cohesive and consistent so that when I run `npm run dev`, the app looks like a polished, futuristic, production-ready UI while retaining all existing functionality.
