@@ -51,7 +51,7 @@ export default function Navbar() {
               </svg>
             </motion.div>
             <span className="text-xl font-bold gradient-text group-hover:opacity-80 transition-opacity">
-              ResumeAI
+              InterviewBuddy
             </span>
           </Link>
 
